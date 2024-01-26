@@ -8,12 +8,12 @@ function handler(event) {
 
   // Trim trailing slash
   if (request.uri.length > 1 && request.uri.endsWith('/')) {
-    request.uri = request.uri.substring(0, request.uri.length - 1);
+    request.uri = request.uri.slice(0, -1);
   }
 
   // html pages - don't rewrite for root (/) or static content (i.e. anything with a file extension)
   if (request.uri !== '/' && request.uri.indexOf('.') === -1) {
-    request.uri = `${uri}.html`;
+    request.uri = `${request.uri}.html`;
   }
 
   return request;
