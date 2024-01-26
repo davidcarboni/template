@@ -59,6 +59,7 @@ if [ ! -d "$name" ] && [ ! -d ".infrastructure" ]; then
   echo "> Adding template stack code"
   cp $dir/setup/cfFunction.js ./lib/cfFunction.js
   ts-node $dir/setup/stackCode.ts $name
+  printf "\n!cfFunction.js" >> .gitignore # CDK ignores *.js
 
   # Install types, eslint and scloud libraries
   echo "> Installing additional dependencies"
