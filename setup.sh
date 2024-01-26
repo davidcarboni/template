@@ -46,7 +46,7 @@ if [ ! -d "$name" ] && [ ! -d ".infrastructure" ]; then
   echo "export AWS_PROFILE=default" >> secrets/aws.sh
   echo "export DOMAIN_NAME=example.com" >> secrets/domain.sh
   echo "# export ZONE_ID=Z0XXXXXXXXXXXXXXXXXXX" >> secrets/domain.sh
-  echo "export COGNITO_DOMAIN_PREFIX=1706284937817" >> secrets/domain.sh
+  echo "export COGNITO_DOMAIN_PREFIX=$(date +%s)" >> secrets/domain.sh
   echo "export SLACK_WEBHOOK=https://hooks.slack.com/services/xxxxxxxxxxx/xxxxxxxxxxx/xxxxxxxxxxxxxxxxxxx" >> secrets/slack.sh
   echo "export USERNAME=myusername" >> secrets/github.sh
   echo "export PERSONAL_ACCESS_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxx" >> secrets/github.sh
