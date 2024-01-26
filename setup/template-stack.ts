@@ -1,6 +1,8 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { Cognito, PrivateBucket, QueueFunction, WebRoutes, ZipFunction, githubActions } from '@scloud/cdk-patterns';
+import {
+  Cognito, PrivateBucket, QueueFunction, WebRoutes, ZipFunction, githubActions,
+} from '@scloud/cdk-patterns';
 import { AttributeType, BillingMode, Table } from 'aws-cdk-lib/aws-dynamodb';
 import { Function } from 'aws-cdk-lib/aws-lambda';
 import { HostedZone, IHostedZone } from 'aws-cdk-lib/aws-route53';
@@ -119,7 +121,7 @@ export default class TemplateStack extends cdk.Stack {
   cognito(): Cognito {
     // Cognito for authentication
     const stack = cdk.Stack.of(this);
-    const authDomainPrefix = `${stack.stackName}-${Date.now()}`.toLowerCase();
+    const authDomainPrefix = `${stack.stackName}-${process.env.COGNITO_DOMAIN_PREFIX}`.toLowerCase(); // COGNITO_DOMAIN_PREFIX needs to be unique, but also constant, otherwise we get an error on deployment
     const callbackUrl = `https://${envVar('DOMAIN_NAME')}/auth`;
 
     // Default to using a "domain prefix"
