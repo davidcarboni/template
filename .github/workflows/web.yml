@@ -38,10 +38,8 @@ jobs:
     - name: Upload to s3
       working-directory: ${{ github.workflow }}
       run: |
-        cp -r public/* dist/
-        cd dist
-        # aws s3 sync --delete . s3://${bucket}/
-        aws s3 sync . s3://${bucket}/
+        cd public
+        aws s3 sync --delete . s3://${bucket}/
 
     - name: Invalidate Cloudfront
       working-directory: ${{ github.workflow }}
