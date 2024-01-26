@@ -14,8 +14,7 @@ else
   echo "Using AWS profile: $AWS_PROFILE"
 fi
 
-echo "Starting infrastructure build: $(date)"
-# cdk bootstrap
+echo "Starting infrastructure diff: $(date)"
 
 # Lint
 npm run lint
@@ -23,7 +22,7 @@ npm run lint
 # Show differences
 cdk diff
 
-read -p "Do you want to diif the stack? (y/N) " yn
+read -p "Do you want to diff the stack? (y/N) " yn
 case $yn in
 	y ) echo Deploying...;;
 	* ) echo Exit;
