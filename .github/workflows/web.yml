@@ -1,0 +1,59 @@
+name: web
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+    # Build when there are changes in the directory that holds the component,
+    # or when this workflow file is changed
+    - 'web/**'
+    - '.github/workflows/web.yml'
+  schedule:
+    # A weekly build to pick up updates to the base container image
+    # A weekday at mid-day - when someone is likely to be working (avoid bank holidays)
+    - cron: "0 12 * * 4"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    name: Web
+    runs-on: ubuntu-latest
+    env:
+      bucket: ${{ vars.CLOUDFRONT_BUCKET }}
+      distributionId: ${{ vars.CLOUDFRONT_DISTRIBUTIONID }}
+
+    steps:
+
+    - uses: actions/checkout@v3
+
+    - uses: aws-actions/configure-aws-credentials@v3
+      with:
+        role-to-assume: ${{ vars.GHA_OIDC_ROLE }}
+        aws-region: eu-west-2
+
+    - name: Upload to s3
+      working-directory: ${{ github.workflow }}
+      run: |
+        cp -r public/* dist/
+        cd dist
+        # aws s3 sync --delete . s3://${bucket}/
+        aws s3 sync . s3://${bucket}/
+
+    - name: Invalidate Cloudfront
+      working-directory: ${{ github.workflow }}
+      run: |
+        aws cloudfront create-invalidation --distribution-id $distributionId --paths '/*'
+
+    - name: Notify Slack
+      if: failure()
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_BUILD }}
+        SLACK_USERNAME: HairTracker build
+        SLACK_COLOR: ${{ job.status }}
+        SLACK_ICON_EMOJI: ":github_octocat:"
+        SLACK_CHANNEL: build
