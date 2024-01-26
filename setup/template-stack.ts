@@ -121,7 +121,7 @@ export default class TemplateStack extends cdk.Stack {
   cognito(): Cognito {
     // Cognito for authentication
     const stack = cdk.Stack.of(this);
-    const authDomainPrefix = `${stack.stackName}-${process.env.COGNITO_DOMAIN_PREFIX}`.toLowerCase(); // COGNITO_DOMAIN_PREFIX needs to be unique, but also constant, otherwise we get an error on deployment
+    const authDomainPrefix = `${stack.stackName}-${envVar('COGNITO_DOMAIN_PREFIX')}`.toLowerCase(); // COGNITO_DOMAIN_PREFIX needs to be unique, but also constant, otherwise we get an error on deployment. This is auto-generated and can be replaced with a value of your choice.
     const callbackUrl = `https://${envVar('DOMAIN_NAME')}/auth`;
 
     // Default to using a "domain prefix"
