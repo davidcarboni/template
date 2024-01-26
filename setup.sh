@@ -40,13 +40,15 @@ if [ ! -d "$name" ] && [ ! -d ".infrastructure" ]; then
   mkdir secrets
 
   printf '\n## Build inputs\n' >> secrets/README.md
-  echo "* Add any input values you need for the build in this directory." >> secrets/README.md
-  echo '* Values need to be defined in *.sh files using `export MY_VAR=my_value`.' >> secrets/README.md
-  echo "* Any *.sh files in this directory will be sourced before the infrastructure build runs." >> secrets/README.md
+  echo " * Add any input values you need for the build in this directory." >> secrets/README.md
+  echo ' * Values need to be defined in *.sh files using `export MY_VAR=my_value`.' >> secrets/README.md
+  echo " * Any *.sh files in this directory will be sourced before the infrastructure build runs." >> secrets/README.md
 
   printf '\n## Build outputs\n' >> secrets/README.md
   echo "Values output from the CDK build will be written to this directory." >> secrets/README.md
   echo "Additionally the scloud Github integration will write files to this directory that identify which CDK outputs should be used to set Github Actions variables and/or secrets." >> secrets/README.md
+  echo " * Template.ghaVariables.json - identifies CDK outputs that should be set as Github Actions variables"
+  echo " * Template.ghaSecrets.json - identifies CDK outputs that should be set as Github Actions secrets"
 
   echo "export AWS_PROFILE=default" >> secrets/aws.sh
   echo "export DOMAIN_NAME=example.com" >> secrets/domain.sh
