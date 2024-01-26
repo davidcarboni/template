@@ -39,12 +39,12 @@ if [ ! -d "$name" ] && [ ! -d ".infrastructure" ]; then
   echo secrets >> .gitignore
   mkdir secrets
 
-  echo "\n## Build inputs\n" >> secrets/REATME.md
-  echo "Add any input values you need for the build in this directory." >> secrets/README.md
-  echo 'Values need to be defines in *.sh files using `export MY_VAR=my_value`.' >> secrets/README.md
-  echo "Any *.sh files in this directory will be sourced before the infrastructure build runs." >> secrets/README.md
+  printf '\n## Build inputs\n' >> secrets/README.md
+  echo "* Add any input values you need for the build in this directory." >> secrets/README.md
+  echo '* Values need to be defined in *.sh files using `export MY_VAR=my_value`.' >> secrets/README.md
+  echo "* Any *.sh files in this directory will be sourced before the infrastructure build runs." >> secrets/README.md
 
-  echo "\n## Build outputs\n" >> secrets/README.md
+  printf '\n## Build outputs\n' >> secrets/README.md
   echo "Values output from the CDK build will be written to this directory." >> secrets/README.md
   echo "Additionally the scloud Github integration will write files to this directory that identify which CDK outputs should be used to set Github Actions variables and/or secrets." >> secrets/README.md
 
