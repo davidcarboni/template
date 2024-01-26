@@ -22,7 +22,8 @@ Setup
  * Clone this repo, rename the directory and change the remote to the repo you're setting up
  * run `./setup.sh` to generate and set up a template CDK infrastructure (the CDK stack will be named to match the name of the current directory)
  * edit the generated `*.sh` files under `.infrastructure/secrets/` to set the domain name (and optionally zone ID if using a pre-existing zone) Github details (including personal access token)
- * From the `.infrastructure` directory run `./setup.sh` to deploy the infrastructure
+ * From the `.infrastructure` directory run `./deploy.sh` to deploy the infrastructure
+ * Once you're up and running, `/setup.sh` and the `/setup` direcory can be deleted
 
 Development
  * Make the changes you need
