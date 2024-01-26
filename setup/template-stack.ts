@@ -34,6 +34,7 @@ export default class TemplateStack extends cdk.Stack {
     // This is useful because updating a Lambda function in the infrastructure might set the Lambda code to a default placeholder.
     // Having a bucket to store the code in means we can update the Lambda function to use the code, either here in the infrastructure build, or from the Github Actions build.
     const builds = PrivateBucket.expendable(this, 'builds');
+    githubActions(this).addGhaBucket('buildsBucket', builds); // 'buildsBucket' will be translated to 'BUILDS_BUCKET' in Github Actions
 
     // An optional queue for sending notifications to Slack
     const slackQueue = this.slack();
@@ -59,15 +60,16 @@ export default class TemplateStack extends cdk.Stack {
     // Example Github Actions variables
     // NB the scloud constructs will create most of the variables you need automatically
     githubActions(this).addGhaVariable('variableMcVariableFace', 'custom', 'a build variavle value'); // 'variableMcVariableFace' will be translated to 'VARIABLE_MC_VARIABLE_FACE_CUSTOM' in Github Actions
-    githubActions(this).addGhaBucket('aBucketName', aBucket); // 'aBucketName' will be translated to 'A_BUCKET_NAME_BUCKET' in Github Actions
 
     // Example Github Actions secret
     // NB the scloud constructs will create most of the secrets you need automatically
-    githubActions(this).addGhaSecret('secretMcSecretFace', 'test');
+    githubActions(this).addGhaSecret('secretMcSecretFace', 'test'); // 'secretMcSecretFace' will be translated to 'SECRET_MC_SECRET_FACE' in Github Actions
 
     // Create the frontend and API using Cloudfront
-    // This will create a series of variables in Github Actions that can be used to deploy the frontend and API:
-    //
+    // The following calls will create variables in Github Actions that can be used to deploy the frontend and API:
+    // * API_LAMBDA - the name of the Lambda function to update when deploying the API
+    // * CLOUDFRONT_BUCKET - for uploading the frontend
+    // * CLOUDFRONT_DISTRIBUTIONID - for invalidating the Cloudfront cache
     const api = this.api(cognito, builds, aBucket, aTable, slackQueue);
     WebRoutes.routes(this, 'cloudfront', { '/api/*': api }, {
       zone,
