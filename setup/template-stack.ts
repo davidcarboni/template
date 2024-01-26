@@ -74,7 +74,7 @@ export default class TemplateStack extends cdk.Stack {
       redirectWww: true,
       functionAssociation: {
         // Enables mappling paths like /privacy to /privacy.html so they can be served from s3
-        function: new cloudfront.Function(this, 'hairtrackerAFunction', {
+        function: new cloudfront.Function(this, 'cfFunction', {
           code: cloudfront.FunctionCode.fromFile({ filePath: './lib/cfFunction.js' }),
           comment: 'Rewrite URLs to .html and redirect /register, /iphone and /android',
         }),
