@@ -8,13 +8,16 @@ for i in secrets/*.sh; do
 done
 
 # AWS profile
-if [ -z "$AWS_PROFILE" ]; then
+# Use the value passed in, or fall back to "default"
+if [ -z ${AWS_PROFILE+x} ]; then # https://stackoverflow.com/a/13864829/723506
   echo "Using default AWS profile"
 else
   echo "Using AWS profile: $AWS_PROFILE"
 fi
 
 echo "Starting infrastructure build: $(date)"
+
+# Bootstrap is usually only needed once, but if there's a major CDK update it might be needed again
 # cdk bootstrap
 
 # Lint

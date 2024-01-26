@@ -43,7 +43,6 @@ if [ ! -d "$name" ] && [ ! -d ".infrastructure" ]; then
   cp $dir/setup/README.md ./secrets/README.md
 
   # Add placeholder secrets
-  echo "export AWS_PROFILE=default" >> secrets/aws.sh
   echo "export DOMAIN_NAME=example.com" >> secrets/domain.sh
   echo "# export ZONE_ID=Z0XXXXXXXXXXXXXXXXXXX" >> secrets/domain.sh
   echo "export COGNITO_DOMAIN_PREFIX=$(date +%s)" >> secrets/domain.sh
@@ -52,6 +51,9 @@ if [ ! -d "$name" ] && [ ! -d ".infrastructure" ]; then
   echo "export PERSONAL_ACCESS_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxx" >> secrets/github.sh
   echo "export OWNER=myorg" >> secrets/github.sh
   echo "export REPO=${name}" >> secrets/github.sh
+  if [ ! -z ${AWS_PROFILE+x} ] ; then # https://stackoverflow.com/a/13864829/723506
+    echo "export AWS_PROFILE=${AWS_PROFILE}" >> secrets/aws.sh
+  fi
 
   # Add template stack code
   echo "> Adding template stack code"
@@ -85,20 +87,14 @@ if [ ! -d "$name" ] && [ ! -d ".infrastructure" ]; then
 
   # Bootstrap CDK
   echo "> Bootstrapping CDK (you need AWS credentials configured for this)"
-  # Secrets, potentially including an AWS_PROFILE variable:
+  # Secrets are needed because the bootstrap will execute out stack code, which should fail if they're not set:
   for i in secrets/*.sh; do
     echo " * $i"
     source $i
   done
-  # AWS profile check
-  if [ -z "$AWS_PROFILE" ]; then
-    echo " - Using default AWS profile"
-  else
-    echo " - Using AWS profile: $AWS_PROFILE"
-  fi
   cdk bootstrap
 
-  echo "> Success: infrastructure setup complete. Run \"./deploy.sh\" from the .infrastructure directory to deploy."
+  echo "> Success: infrastructure setup complete. If this AWS account has no other stacks deployed, you can change to the ".infrastructure" directory and run \"./deploy.sh\". Otherwise, check for an existing OpenID Connect provider (see /README.md)"
 else
   echo " > Infrastructure already exists. Skipping cdk setup."
 fi
