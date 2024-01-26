@@ -1,7 +1,7 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import {
-  Cognito, PrivateBucket, QueueFunction, WebRoutes, ZipFunction, githubActions,
+  Cognito, BuildsBucket, QueueFunction, WebRoutes, ZipFunction, githubActions,
 } from '@scloud/cdk-patterns';
 import { AttributeType, BillingMode, Table } from 'aws-cdk-lib/aws-dynamodb';
 import { Function } from 'aws-cdk-lib/aws-lambda';
@@ -33,8 +33,7 @@ export default class TemplateStack extends cdk.Stack {
     // A bucket to hold zip files for Lambda functions
     // This is useful because updating a Lambda function in the infrastructure might set the Lambda code to a default placeholder.
     // Having a bucket to store the code in means we can update the Lambda function to use the code, either here in the infrastructure build, or from the Github Actions build.
-    const builds = PrivateBucket.expendable(this, 'builds');
-    githubActions(this).addGhaBucket('buildsBucket', builds); // 'buildsBucket' will be translated to 'BUILDS_BUCKET' in Github Actions
+    const builds = new BuildsBucket(this)
 
     // An optional queue for sending notifications to Slack
     const slackQueue = this.slack();
