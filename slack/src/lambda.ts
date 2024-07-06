@@ -1,5 +1,5 @@
 import {
-  Context, SQSBatchResponse, SQSEvent,
+  SQSBatchResponse, SQSEvent,
 } from 'aws-lambda';
 import axios from 'axios';
 
