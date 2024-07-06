@@ -19,9 +19,10 @@ Prerequisites
  * A Github personal access token with "repo" permissions
 
 Setup
- * Clone this repo, rename the directory and change the remote to the repo you're setting up
- * run `./setup.sh` to generate and set up a template CDK infrastructure (the CDK stack will be named to match the name of the current directory)
- * edit the generated `*.sh` files under `.infrastructure/secrets/` to set the domain name (and optionally zone ID if using a pre-existing zone) Github details (including personal access token)
+ * Clone this repo and rename the directory from `template` to the repo name you'd like to use. If you already have a repo, you can change the remote to point to that, or you can simply copy generated files to your repo
+ * If you're using an AWS profile, set the `AWS_PROFILE` environment variable to have this configured in the deployment.
+ * Run `./setup.sh` to generate and set up a template CDK infrastructure (the CDK stack will be named to match the name of the current directory, which is the reason to rename it in the first step)
+ * edit the generated `*.sh` files under `.infrastructure/secrets/` to set the domain name (and optionally zone ID if using a pre-existing zone, which is recommended)and your Github details (including personal access token)
  * If your AWS account already has an OpenID Connect provider (e.g. if other stacks are deployed to this account) you will need to comment out the `githubActions(this).ghaOidcProvider();` line in `.infrastructure/lib/*-stack.ts`. You can check if there's already a provider by going to IAM -> (left menu) Access Management -> Identity providers. If there's an entry for `token.actions.githubusercontent.com` then you'll need to comment out the line in the stack code. The provider enables keyless login from Github Actions to AWS for deployment.
  * From the `.infrastructure` directory run `./deploy.sh` to deploy the infrastructure
  * Once you're up and running, `/setup.sh` and the `/setup` direcory can be deleted
