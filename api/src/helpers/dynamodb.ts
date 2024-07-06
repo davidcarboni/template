@@ -6,6 +6,14 @@ import {
   ScanCommandOutput,
 } from '@aws-sdk/lib-dynamodb';
 
+//
+// *** Note: This is a work in progress! ***
+//
+// Not all of these functions will behave as expected
+// However the basics of get/put should be fine
+//
+
+// https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/dynamodb-example-dynamodb-utilities.html
 // https://github.com/awsdocs/aws-doc-sdk-examples/tree/main/javascriptv3/example_code/dynamodb/actions/document-client
 
 export const documentClient = DynamoDBDocumentClient.from(
