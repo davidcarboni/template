@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import { SQSClient, SendMessageCommand } from '@aws-sdk/client-sqs';
 import { env } from './util';
 

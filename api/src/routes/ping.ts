@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import { Request, Response } from '@scloud/lambda-api/dist/types';
 
 export async function ping(request: Request): Promise<Response> {

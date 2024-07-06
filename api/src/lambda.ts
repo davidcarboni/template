@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 // https://aws.amazon.com/blogs/mobile/understanding-amazon-cognito-user-pool-oauth-2-0-grants/
 import {
   APIGatewayProxyEvent,

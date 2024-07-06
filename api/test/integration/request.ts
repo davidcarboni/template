@@ -7,22 +7,22 @@ export const axios = Axios.create({
   validateStatus: () => true,
 });
 
-function url(path: string, queryParameters?: Record<string, any>) {
+function url(path: string, queryParameters?: Record<string, unknown>) {
   return `${baseUrl}${path}?${new URLSearchParams({ test: 'true', ...queryParameters })}`;
 }
 
-export function get(path: string, queryParameters?: Record<string, any>): Promise<AxiosResponse> {
+export function get(path: string, queryParameters?: Record<string, unknown>): Promise<AxiosResponse> {
   return axios.get(url(path, queryParameters));
 }
 
-export function put(path: string, body: any): Promise<AxiosResponse> {
+export function put(path: string, body: unknown): Promise<AxiosResponse> {
   return axios.put(url(path), JSON.stringify(body));
 }
 
-export function post(path: string, body: any): Promise<AxiosResponse> {
+export function post(path: string, body: unknown): Promise<AxiosResponse> {
   return axios.post(url(path), JSON.stringify(body));
 }
 
-export function del(path: string, queryParameters?: Record<string, any>): Promise<AxiosResponse> {
+export function del(path: string, queryParameters?: Record<string, unknown>): Promise<AxiosResponse> {
   return axios.delete(url(path, queryParameters));
 }
