@@ -4,7 +4,7 @@
   "description": "Sends queued messages to Slack.",
   "main": "src/lambda.ts",
   "scripts": {
-    "lint": "eslint --fix --ext ts",
+    "lint": "eslint --fix src test",
     "test": "mocha --import=tsx -r tsconfig-paths/register 'test/unit/**/*.spec.ts' # tsconfig-paths/register helps resolve imports in tests",
     "compile": "tsc",
     "package": "mkdir -p dist && cp -r js/src dist && cp package*.json dist && cd dist && yarn --prod && zip -r function.zip ."
