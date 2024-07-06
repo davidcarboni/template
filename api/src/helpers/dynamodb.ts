@@ -1,16 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import {
-  DeleteCommand, DynamoDBDocumentClient, GetCommand, PutCommand, QueryCommand,
+  DynamoDBDocumentClient, GetCommand, PutCommand, QueryCommand, DeleteCommand, BatchWriteCommand, UpdateCommand,
+  ScanCommandInput, ScanCommand,
+  ScanCommandOutput,
 } from '@aws-sdk/lib-dynamodb';
 
-//
-// *** Note: This is a work in progress! ***
-//
-// Not all of these functions will behave as expected
-// However the basics of get/put should be fine
-//
-
-// https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/dynamodb-example-dynamodb-utilities.html
+// https://github.com/awsdocs/aws-doc-sdk-examples/tree/main/javascriptv3/example_code/dynamodb/actions/document-client
 
 export const documentClient = DynamoDBDocumentClient.from(
   new DynamoDBClient(),
@@ -121,24 +117,72 @@ export async function putItem(tableName: string, item: { [key: string]: any; }) 
   }));
 }
 
-// /**
-//  * Update an item
-//  * @param tableName DynamoDB table name
-//  * @param item Must include the partition key and, if defined, the sort key
-//  */
-// export async function updateItem(tableName: string, key: { [key: string]: any; }, values: { [key: string]: any; }) {
-//   const response = await documentClient.send(new UpdateCommand({
-//     TableName: tableName,
-//     Key: key,
-//     UpdateExpression: "set Color = :color",
-//     ExpressionAttributeValues: {
-//       ":color": "black",
-//     },
-//     ReturnValues: "ALL_NEW",
-//   }));
-//   console.log(response);
-//   return response;
-// }
+/**
+ * Put a batch of items.
+ * Internally this will make BatchWrite requests for up to 25 items at a time until all items have been processed.
+ * @param tableName DynamoDB table name
+ * @param items These must include the partition key and, if defined, the sort key
+ */
+export async function putItems(tableName: string, items: { [key: string]: any; }[]) {
+  if (items.length === 0) return; // Short-circuit exit
+
+  let remaining: { [key: string]: any; }[] = items;
+  do {
+    // Select a batch of up to 25 items
+    const batch = remaining.slice(0, 25);
+    remaining = remaining.slice(25);
+
+    // For every chunk of 25 items, make one BatchWrite request.
+    const putRequests = batch.map((Item) => ({
+      PutRequest: {
+        Item,
+      },
+    }));
+
+    documentClient.send(new BatchWriteCommand({
+      RequestItems: {
+        [tableName]: putRequests,
+      },
+    }));
+  } while (remaining.length > 0);
+}
+
+/**
+ * Generate the UpdateExpression, ExpressionAttributeNames, and ExpressionAttributeValues parameters for updateItem
+ */
+function createUpdateExpressions(item: { [key: string]: any; }) {
+  const UpdateExpression: string[] = [];
+  const ExpressionAttributeValues: { [key: string]: any; } = {};
+  const ExpressionAttributeNames: { [key: string]: any; } = {};
+  Object.keys(item).forEach((key) => {
+    UpdateExpression.push(`#${key} = :${key}`);
+    ExpressionAttributeNames[`#${key}`] = key;
+    ExpressionAttributeValues[`:${key}`] = item[key];
+  });
+  return { UpdateExpression: `SET ${UpdateExpression.join(', ')}`, ExpressionAttributeNames, ExpressionAttributeValues };
+}
+
+/**
+ * Update an item
+ * NB you can't update the partition key or sort key.
+ * If you want to change these you'll need to delete the item and put a new one.
+ * @param tableName DynamoDB table name
+ * @param item Must include the partition key and, if defined, the sort key
+ * @returns The attributes of the updated item
+ */
+export async function updateItem(tableName: string, key: { [key: string]: any; }, values: { [key: string]: any; })
+  : Promise<Record<string, any> | undefined> {
+  const { UpdateExpression, ExpressionAttributeNames, ExpressionAttributeValues } = createUpdateExpressions(values);
+  const response = await documentClient.send(new UpdateCommand({
+    TableName: tableName,
+    Key: key,
+    UpdateExpression,
+    ExpressionAttributeNames, // DynamoDB can be picky about reserved words like 'id' and 'type'. Using ExpressionAttributeNames avoids conflicts
+    ExpressionAttributeValues,
+    ReturnValues: 'ALL_NEW',
+  }));
+  return response.Attributes;
+}
 
 /**
  * https://stackoverflow.com/questions/44589967/how-to-fetch-scan-all-items-from-aws-dynamodb-using-node-js
@@ -192,7 +236,6 @@ export async function findItems(
   const result: { [key: string]: any; }[] = [];
   let response;
   do {
-    // eslint-disable-next-line no-await-in-loop
     response = await documentClient.send(new QueryCommand(params));
     if (response.Items) response.Items.forEach((item) => result.push(item));
     params.ExclusiveStartKey = response.LastEvaluatedKey;
@@ -295,96 +338,75 @@ export async function findItems(
 //   return result;
 // }
 
-// /**
-//  * https://stackoverflow.com/questions/44589967/how-to-fetch-scan-all-items-from-aws-dynamodb-using-node-js
-//  * @param tableName DynamoDB table name
-//  * @returns An array containing all the items (could get large!)
-//  */
-// export async function listItems(tableName: string): Promise<{ [key: string]: any }[]> {
-//   const params: ScanInput = {
-//     TableName: tableName,
-//   };
+/**
+ * https://stackoverflow.com/questions/44589967/how-to-fetch-scan-all-items-from-aws-dynamodb-using-node-js
+ * @param tableName DynamoDB table name
+ * @returns An array containing all the items (could get large!)
+ */
+export async function listItems(tableName: string): Promise<Record<string, any>[]> {
+  const params: ScanCommandInput = {
+    TableName: tableName,
+  };
 
-//   const result: { [key: string]: any }[] = [];
-//   let items;
-//   do {
-//     // eslint-disable-next-line no-await-in-loop
-//     items = await ddb.scan(params).promise();
-//     items.Items?.forEach((item) => result.push(item));
-//     params.ExclusiveStartKey = items.LastEvaluatedKey;
-//   } while (typeof items.LastEvaluatedKey !== 'undefined');
+  let result: ScanCommandOutput;
+  const items: Record<string, any>[] = [];
 
-//   return result;
-// }
+  do {
+    result = await documentClient.send(new ScanCommand(params));
+    if (result.Items) items.push(...result.Items);
+    params.ExclusiveStartKey = result.LastEvaluatedKey;
+  } while (typeof result.LastEvaluatedKey !== 'undefined');
 
-// /**
-//  * Data migration for a set of DynamoDB iems.
-//  * @param table The DDB table to write to
-//  * @param page A page of DDB items returned by the scan.
-//  * @param update A function that takes a DDB item as a parameter,
-//  * updates the object and returns it to be put bach to the table.
-//  * @returns The number of updates made
-//  */
-// export async function migratePage(
-//   table: string,
-//   page: DocumentClient.ItemList,
-//   update: Function,
-// ): Promise<number> {
-//   const batches: Promise<any>[] = [];
+  return items;
+}
 
-//   // Filter out any blanks (i.e. items that don't need to be updated)
-//   const items = page.map((item) => update(item));
-//   let puts = (await Promise.all(items)).filter((item) => item);
-//   const count = puts.length;
+/**
+ * Data migration for a set of DynamoDB iems.
+ * @param table The DDB table to write to
+ * @param page A page of DDB items returned by the scan.
+ * @param update A function that takes a DDB item as a parameter,
+ * updates the object and returns it to be put bach to the table.
+ * @returns The number of updates made
+ */
+export async function migratePage(
+  table: string,
+  page: any[],
+  update: (item: any) => any,
+): Promise<number> {
+  // Migrate items and filter out any blanks (aka items that don't need to be updated)
+  const items = page.map((item) => update(item)).filter((item) => item);
+  await putItems(table, items);
 
-//   // Process puts
-//   const batchSize = 25;
-//   while (puts.length > 0) {
-//     // Comvert the page of items into batches of 25 items (the ddb batch-size limit)
-//     const batch = puts.slice(0, batchSize);
-//     puts = puts.slice(batchSize);
+  console.log(`Processed ${items.length} updates from a page of ${page.length}`);
+  return items.length;
+}
 
-//     if (batch.length > 0) {
-//       // Run the batch
-//       batches.push(ddb.batchWrite({
-//         RequestItems: {
-//           [table]: batch.map((item) => ({ PutRequest: { Item: item } })),
-//         },
-//       }).promise());
-//     }
-//   }
+/**
+ * Data migration for a DynamoDB table.
+ * @param update A function that takes a DDB item as a parameter,
+ * updates the object and returns it to be put bach to the table.
+ * @param sourceTable The DDB table to scan
+ * @param destinationTable (Optional) The DDP table to updated items into,
+ * If not provided, items are put back to the source table.
+ */
+export async function migrate(update: (item: any) => any | undefined, sourceTable: string, destinationTable?: string): Promise<number> {
+  const params: ScanCommandInput = {
+    TableName: sourceTable,
+  };
 
-//   // Await completion of batches
-//   await Promise.all(batches);
+  let itemCount = 0;
+  let updateCount = 0;
+  let result: ScanCommandOutput;
 
-//   console.log(`Processed ${batches.length} batches for ${count} items from a page of ${page.length}`);
-//   return count;
-// }
+  do {
+    result = await documentClient.send(new ScanCommand(params));
+    if (result.Items) {
+      itemCount += result.Items.length;
+      updateCount += await migratePage(destinationTable || sourceTable, result.Items, update);
+    }
+    console.log(`Migrated ${updateCount} of ${itemCount} items`);
+    params.ExclusiveStartKey = result.LastEvaluatedKey;
+  } while (typeof result.LastEvaluatedKey !== 'undefined');
 
-// /**
-//  * Data migration for a DynamoDB table.
-//  * @param update A function that takes a DDB item as a parameter,
-//  * updates the object and returns it to be put bach to the table.
-//  * @param sourceTable The DDB table to scan
-//  * @param destinationTable (Optional) The DDP table to updated items into,
-//  * If not provided, items are put back to the source table.
-//  */
-// export async function migrate(update: Function, sourceTable: string, destinationTable?: string)
-//   : Promise<number> {
-//   const params: ScanInput = {
-//     TableName: sourceTable,
-//   };
-
-//   let count = 0;
-//   let result: DocumentClient.ScanOutput;
-//   do {
-//     // eslint-disable-next-line no-await-in-loop
-//     result = await ddb.scan(params).promise();
-//     // eslint-disable-next-line no-await-in-loop
-//     if (result.Items) count += await migratePage(`${destinationTable || sourceTable}`, result.Items, update);
-//     console.log(`Migrated ${count} items`);
-//     params.ExclusiveStartKey = result.LastEvaluatedKey;
-//   } while (typeof result.LastEvaluatedKey !== 'undefined');
-
-//   return count;
-// }
+  return updateCount;
+}
