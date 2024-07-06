@@ -14,34 +14,35 @@
   "author": "David Carboni",
   "license": "ISC",
   "devDependencies": {
+    "@eslint/js": "*",
+    "@types/aws-lambda": "*",
     "@types/chai": "*",
     "@types/mocha": "*",
     "@types/node": "*",
+    "@types/source-map-support": "*",
     "@types/tmp": "*",
     "chai": "*",
+    "eslint": "*",
     "mocha": "*",
     "nodemon": "*",
     "tmp": "*",
     "ts-node": "*",
     "tsconfig-paths": "*",
     "tsx": "*",
-    "typescript": "*"
+    "typescript": "*",
+    "typescript-eslint": "*"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "*",
     "@aws-sdk/client-s3": "*",
     "@aws-sdk/client-sqs": "*",
     "@aws-sdk/lib-dynamodb": "*",
-    "@eslint/js": "*",
     "@scloud/lambda-api": "*",
     "@scloud/lambda-fileupload": "*",
     "@scloud/lambda-local": "*",
     "@scloud/s3": "*",
-    "@types/aws-lambda": "*",
     "axios": "*",
-    "eslint": "*",
     "jsonwebtoken": "*",
-    "jwks-rsa": "*",
-    "typescript-eslint": "*"
+    "jwks-rsa": "*"
   }
 }
