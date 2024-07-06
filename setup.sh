@@ -66,25 +66,23 @@ if [ ! -d "$name" ] && [ ! -d ".infrastructure" ]; then
   npm i --save-dev \
     @types/node \
     @types/aws-lambda \
-    @typescript-eslint/eslint-plugin \
+    @eslint/js \
     @typescript-eslint/parser \
     @types/source-map-support \
     eslint \
-    eslint-config-airbnb-base  \
-    eslint-plugin-import \
-    eslint-import-resolver-typescript \
+    typescript-eslint \
     ts-node \
     --
   npm i \
     @scloud/cdk-github \
     @scloud/cdk-patterns \
     --
-  cp $dir/setup/.eslintrc.js .
+  cp $dir/setup/eslint.config.js .
 
   # Update dependencies to "*" to keep everything up to date
   echo "> Setting dependencies to \"*\" to keep things up to date"
   ts-node $dir/setup/starDependencies.ts
-  echo package-lock.json >> .gitignore
+  printf "\npackage-lock.json" >> .gitignore # Ignore precise dependency versions
 
   # Bootstrap CDK
   echo "> Bootstrapping CDK (you need AWS credentials configured for this)"
