@@ -65,13 +65,12 @@ if [ ! -d "$name" ] && [ ! -d ".infrastructure" ]; then
   echo "> Installing additional dependencies"
   npm i --save-dev \
     @types/node \
-    @types/aws-lambda \
-    @eslint/js \
-    @typescript-eslint/parser \
-    @types/source-map-support \
-    eslint \
-    typescript-eslint \
     ts-node \
+    @types/source-map-support \
+    @types/aws-lambda \
+    eslint \
+    @eslint/js \
+    typescript-eslint \
     --
   npm i \
     @scloud/cdk-github \
