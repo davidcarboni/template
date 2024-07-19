@@ -25,7 +25,9 @@ Setup
  * edit the generated `*.sh` files under `.infrastructure/secrets/`
    * set the domain name and optionally zone ID if using a pre-existing zone (recommended)
    * set your Github details including a personal access token, which will need to have 'repo' scope
- * If your AWS account already has an OpenID Connect provider (e.g. if other stacks are deployed to this account) you will need to comment out the `githubActions(this).ghaOidcProvider();` line in `.infrastructure/lib/*-stack.ts`. You can check if there's already a provider by going to IAM -> (left menu) Access Management -> Identity providers. If there's an entry for `token.actions.githubusercontent.com` then you'll need to comment out the line in the stack code. The provider enables keyless login from Github Actions to AWS for deployment.
+ * edit `.infrastructure/lib/<name>-stack.ts`
+   * If your AWS account already has an OpenID Connect provider (e.g. if other stacks are deployed to this account) you will need to comment out the `githubActions(this).ghaOidcProvider();` line in `.infrastructure/lib/*-stack.ts`. You can check if there's already a provider by going to IAM -> (left menu) Access Management -> Identity providers. If there's an entry for `token.actions.githubusercontent.com` then you'll need to comment out the line in the stack code. The provider enables keyless login from Github Actions to AWS for deployment.
+   * Delete any other placeholder code you don't need and tidy up linting errors
  * From the `.infrastructure` directory run `./deploy.sh` to deploy the infrastructure
  * Once you're up and running, `/setup.sh` and the `/setup` direcory can be deleted
 
