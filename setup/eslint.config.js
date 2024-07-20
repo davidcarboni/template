@@ -1,5 +1,7 @@
-const eslint = require('@eslint/js');
-const tseslint = require('typescript-eslint');
+// @ts-check
+
+import eslint from '@eslint/js';
+import tseslint from 'typescript-eslint';
 
 // https://typescript-eslint.io/getting-started/
 
@@ -7,7 +9,7 @@ const ignores = [
   '**/*.js',
 ];
 
-module.exports = tseslint.config(
+export default tseslint.config(
   {
     ...eslint.configs.recommended,
     ignores,
