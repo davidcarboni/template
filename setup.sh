@@ -31,6 +31,9 @@ if [ ! -d "$name" ] && [ ! -d ".infrastructure" ]; then
   cp $dir/setup/github.ts .
   ts-node $dir/setup/scripts.ts
 
+  # Update cdk.json
+  ts-node $dir/setup/cdkJson.ts
+
   # Tweak code
   echo "> tweaking stack code"
   ts-node $dir/setup/codeUpdates.ts $name
@@ -65,7 +68,7 @@ if [ ! -d "$name" ] && [ ! -d ".infrastructure" ]; then
   echo "> Installing additional dependencies"
   npm i --save-dev \
     @types/node \
-    ts-node \
+    tsx \
     @types/source-map-support \
     @types/aws-lambda \
     eslint \
