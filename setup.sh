@@ -29,7 +29,7 @@ if [ ! -d "$name" ] && [ ! -d ".infrastructure" ]; then
   cp $dir/setup/deploy.sh .
   cp $dir/setup/diff.sh .
   cp $dir/setup/github.ts .
-  ts-node $dir/setup/scripts.ts
+  ts-node $dir/setup/packageJson.ts
 
   # Update cdk.json
   ts-node $dir/setup/cdkJson.ts
