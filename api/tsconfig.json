@@ -1,13 +1,7 @@
 {
+  "extends": "@tsconfig/node18/tsconfig.json",
   "compilerOptions": {
-    "target": "es2021",
-    "module": "CommonJS",
-    "lib": [
-      "es2021"
-    ],
-    "esModuleInterop": true,
     "declaration": true,
-    "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
     "noImplicitThis": true,
@@ -16,13 +10,10 @@
     "noUnusedParameters": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": false,
-    "inlineSourceMap": true,
     "inlineSources": true,
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
-    "typeRoots": [
-      "./node_modules/@types"
-    ],
+    "inlineSourceMap": true,
     "outDir": "js",
   },
 }
