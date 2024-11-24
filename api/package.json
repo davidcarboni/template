@@ -41,6 +41,7 @@
     "@scloud/lambda-fileupload": "*",
     "@scloud/lambda-local": "*",
     "@scloud/s3": "*",
+    "@tsconfig/node18": "*",
     "axios": "*",
     "jsonwebtoken": "*",
     "jwks-rsa": "*"
