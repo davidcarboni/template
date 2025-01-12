@@ -75,6 +75,7 @@ if [ ! -d "$name" ] && [ ! -d ".infrastructure" ]; then
     eslint \
     @eslint/js \
     typescript-eslint \
+    @tsconfig/node18 \
     --
   npm i \
     @scloud/cdk-github \
