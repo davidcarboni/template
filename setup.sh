@@ -26,6 +26,7 @@ if [ ! -d "$name" ] && [ ! -d ".infrastructure" ]; then
 
   # Update .gitignore for Yarn
   echo "yarn.lock" >> .gitignore
+  rm package-lock.json
 
   # Add scripts
   echo "> adding scripts"
