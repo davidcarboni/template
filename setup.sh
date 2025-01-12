@@ -70,7 +70,7 @@ if [ ! -d "$name" ] && [ ! -d ".infrastructure" ]; then
 
   # Install types, eslint and scloud libraries
   echo "> Installing additional dependencies"
-  npm i --save-dev \
+  yarn add --dev \
     @types/node \
     tsx \
     @types/source-map-support \
@@ -80,7 +80,7 @@ if [ ! -d "$name" ] && [ ! -d ".infrastructure" ]; then
     typescript-eslint \
     @tsconfig/node18 \
     --
-  npm i \
+  yarn add \
     @scloud/cdk-github \
     @scloud/cdk-patterns \
     --
