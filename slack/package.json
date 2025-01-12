@@ -29,8 +29,6 @@
     "typescript-eslint": "*"
   },
   "dependencies": {
-    "aws-lambda": "*",
-    "aws-sdk": "*",
-    "axios": "*"
+    "aws-lambda": "*"
   }
 }

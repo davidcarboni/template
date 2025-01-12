@@ -1,7 +1,6 @@
 import {
   SQSBatchResponse, SQSEvent,
 } from 'aws-lambda';
-import axios from 'axios';
 
 /**
  * Process the content of an SQS message
@@ -9,7 +8,13 @@ import axios from 'axios';
 export async function processMessage(body: string) {
   const slackWebhook = process.env.SLACK_WEBHOOK || '';
   if (slackWebhook) {
-    await axios.post(slackWebhook, { text: `${body}` });
+    await fetch(slackWebhook, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ text: `${body}` }),
+    });
   }
 }
 
