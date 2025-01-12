@@ -67,7 +67,7 @@ if [ ! -d "$name" ] && [ ! -d ".infrastructure" ]; then
   echo "> Adding template stack code"
   cp $dir/setup/cfFunction.js ./lib/cfFunction.js
   ts-node $dir/setup/stackCode.ts $name
-  printf "\n!cfFunction.js\n!eslint.config.js" >> .gitignore # CDK ignores *.js
+  printf "\n!cfFunction.js\n!eslint.config.mjs" >> .gitignore # CDK ignores *.js
 
   # Install types, eslint and scloud libraries
   echo "> Installing additional dependencies"
@@ -85,7 +85,7 @@ if [ ! -d "$name" ] && [ ! -d ".infrastructure" ]; then
     @scloud/cdk-github \
     @scloud/cdk-patterns \
     --
-  cp $dir/setup/eslint.config.js .
+  cp $dir/setup/eslint.config.mjs .
 
   # Update dependencies to "*" to keep everything up to date
   echo "> Setting dependencies to \"*\" to keep things up to date"
