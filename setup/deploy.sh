@@ -21,7 +21,7 @@ echo "Starting infrastructure build: $(date)"
 # cdk bootstrap
 
 # Lint
-npm run lint
+yarn lint
 
 # Show differences
 cdk diff
@@ -38,6 +38,6 @@ cdk deploy --require-approval never --outputs-file ./secrets/cdk-outputs.json
 
 # Update secrets
 echo "Setting Github secrets"
-npm run secrets
+yarn secrets
 
 echo "End: $(date)"
