@@ -88,7 +88,7 @@ if [ ! -d "$name" ] && [ ! -d ".infrastructure" ]; then
   printf "\npackage-lock.json" >> .gitignore # Ignore precise dependency versions
 
   # Bootstrap CDK
-  echo "> Bootstrapping CDK (you need AWS credentials configured for this)"
+  echo "> Bootstrapping CDK (you need AWS credentials configured for this - you may need to run \"aws configure\" or set AWS_PROFILE)"
   # Secrets are needed because the bootstrap will execute out stack code, which should fail if they're not set:
   for i in secrets/*.sh; do
     echo " * $i"
