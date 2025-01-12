@@ -24,6 +24,9 @@ if [ ! -d "$name" ] && [ ! -d ".infrastructure" ]; then
   mv $name .infrastructure
   cd .infrastructure
 
+  # Update .gitignore for Yarn
+  echo "yarn.lock" >> .gitignore
+
   # Add scripts
   echo "> adding scripts"
   cp $dir/setup/deploy.sh .
@@ -31,9 +34,6 @@ if [ ! -d "$name" ] && [ ! -d ".infrastructure" ]; then
   cp $dir/setup/github.ts .
   ts-node $dir/setup/packageJson.ts
   ts-node $dir/setup/tsconfigJson.ts
-
-  # Update .gitignore for Yarn
-  echo "yarn.lock" >> .gitignore
 
   # Update cdk.json
   ts-node $dir/setup/cdkJson.ts
