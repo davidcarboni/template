@@ -1,0 +1,9 @@
+{
+  "name": "setup",
+  "version": "1.0.0",
+  "description": "Setup scripts to configure an app",
+  "main": "index.ts",
+  "author": "David Carboni",
+  "license": "MIT",
+  "type": "module"
+}

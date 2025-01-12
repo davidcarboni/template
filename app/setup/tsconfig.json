@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "module": "ESNext",
+  },
+  "ts-node": {
+    // https://stackoverflow.com/a/74312174/723506
+    // Tell ts-node CLI to install the --loader automatically
+    "esm": true
+  }
+}
