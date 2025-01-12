@@ -3,7 +3,7 @@ import * as fs from 'fs';
 const pkg = JSON.parse(fs.readFileSync('package.json').toString('utf8'));
 
 // Update to ESM
-pkg.type = 'module';
+// pkg.type = 'module';
 
 // Add additional scripts
 pkg.scripts.lint = "eslint --fix bin lib";
