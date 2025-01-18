@@ -32,7 +32,7 @@ Setup
 
 
 Infrastructure checklist
- - `.infrastructure/secrets/github.sh` - set username/owner, repo and access token"
+ - `.infrastructure/secrets/github.sh` - set username/owner, repo (all case-senditive) and access token.
  - `.infrastructure/secrets/domain.sh` - set domain name and hosted zone ID. (and maybe deleted Cognito domain prefix)
  - `.infrastructure/lib/*-stack.ts` - If OIDC provider is already configured, comment this out. Delete whatever's not needed. Degive whether to use `WebRoutes` or just a `WebApi` if no website is needed.
 
