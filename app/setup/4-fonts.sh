@@ -24,13 +24,21 @@ case $yn in
 esac
 
 # Basded on: https://slice-gui.netlify.app/docs/install/
+cd setup
 git clone https://github.com/source-foundry/Slice.git
 cd Slice
+
 python3 -m venv .venv
 source .venv/bin/activate
-# This seemed to fix an error in mare run:
+
+#Seems to fail with an error on PyQt5:
+# pip install -r requirements.txt
+# make run
+
+# use PyPi package as a workaround
 pip install PyQt5
-pip install -r requirements.txt
-make run
+pip install slicegui
+
+slicegui &
 
 echo Finished
