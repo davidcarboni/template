@@ -8,14 +8,13 @@ This repo implements:
 
  * Frontend (Cloudfront - modify the contents of `/web/public` to update the frontend)
  * Lambda (API - modify `/api/src/routes.ts` to build an API)
- * AWS CLoud Development Kit (CDK) infrastructure as code
- * Scloud constructs
- * Scloud Github Actions integration
+ * AWS CLoud Development Kit (CDK) infrastructure as code - modify `.infrastructure/lib/*.stack.ts` and run the `deploy.sh` script
+ * Scloud constructs and Scloud Github Actions integration in the infrastructure code
 
 ## Getting started
 
 Prerequisites
- * Either a domain name with an existing zone in Route53, or the ability to update name servers for a domain to point to a new zone file you'll create in Route53. A working domain is required to provision SSL certificates.
+ * A domain is required to provision SSL certificates. You'll need either a domain name in Route53 with an accompanying hosted zone, or the ability to update name servers for a domain to point to a zone file you will create/have created in Route53.
  * A Github personal access token with "repo" permissions
 
 Setup
