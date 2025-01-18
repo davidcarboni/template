@@ -30,6 +30,12 @@ Setup
  * From the `.infrastructure` directory run `./deploy.sh` to deploy the infrastructure
  * Once you're up and running, `/setup.sh` and the `/setup` direcory can be deleted
 
+
+Infrastructure checklist
+ - `.infrastructure/secrets/github.sh` - set username/owner, repo and access token"
+ - `.infrastructure/secrets/domain.sh` - set domain name and hosted zone ID. (and maybe deleted Cognito domain prefix)
+ - `.infrastructure/lib/*-stack.ts` - If OIDC provider is already configured, comment this out. Delete whatever's not needed. Degive whether to use `WebRoutes` or just a `WebApi` if no website is needed.
+
 Development
  * Make the changes you need
  * Check in and push to Github
