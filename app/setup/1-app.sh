@@ -54,6 +54,7 @@ done
 # Add an upgrade/doctor script to package.json and run it:
 ts-node 1-app.ts
 cd ..
+rm package-lock.json
 yarn upgrade:expo
 
 echo "App setup complete"
