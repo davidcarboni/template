@@ -5,5 +5,8 @@
   "main": "index.ts",
   "author": "David Carboni",
   "license": "MIT",
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^22.10.7"
+  }
 }
