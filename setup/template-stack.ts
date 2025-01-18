@@ -35,7 +35,7 @@ export default class TemplateStack extends cdk.Stack {
     // A bucket to hold zip files for Lambda functions
     // This is useful because updating a Lambda function in the infrastructure might set the Lambda code to a default placeholder.
     // Having a bucket to store the code in means we can update the Lambda function to use the code, either here in the infrastructure build, or from the Github Actions build.
-    const builds = new BuildsBucket(this)
+    const builds = new BuildsBucket(this);
 
     // Bucket to back up infrastructure build inputs/outputs
     // This is useful for backup and for sharing build inputs between developers, but is commentsed out by default
@@ -58,13 +58,17 @@ export default class TemplateStack extends cdk.Stack {
     });
 
     // Example DynamoDB table
-    const aTable = new Table(this, 'table', {
+    const users = new Table(this, 'users', {
       billingMode: BillingMode.PAY_PER_REQUEST,
       partitionKey: {
         name: 'id',
         type: AttributeType.STRING,
       },
       removalPolicy: cdk.RemovalPolicy.DESTROY, // TEMP so you can clean up the stack without resources being left behind
+    });
+    users.addGlobalSecondaryIndex({
+      indexName: 'email',
+      partitionKey: { name: 'email', type: AttributeType.STRING },
     });
 
     // Example Github Actions variables
@@ -91,7 +95,7 @@ export default class TemplateStack extends cdk.Stack {
     // * API_LAMBDA - the name of the Lambda function to update when deploying the API
     // * CLOUDFRONT_BUCKET - for uploading the frontend
     // * CLOUDFRONT_DISTRIBUTIONID - for invalidating the Cloudfront cache
-    const api = this.api(cognito, builds, aBucket, aTable, slackQueue);
+    const api = this.api(cognito, builds, aBucket, users, slackQueue);
     WebRoutes.routes(this, 'cloudfront', { '/api/*': api }, {
       zone,
       domainName: envVar('DOMAIN_NAME'),
@@ -157,7 +161,7 @@ export default class TemplateStack extends cdk.Stack {
     cognito: Cognito,
     builds: Bucket,
     aBucket: Bucket,
-    aTable: Table,
+    users: Table,
     slackQueue: Queue,
   ): Function {
     // Lambda for the Node API
@@ -166,7 +170,7 @@ export default class TemplateStack extends cdk.Stack {
         SIGNIN_URL: cognito.signInUrl(),
         SLACK_QUEUE_URL: slackQueue.queueUrl,
         BUCKET: aBucket.bucketName,
-        TABLE: aTable.tableName,
+        TABLE: users.tableName,
       },
       functionProps: {
         memorySize: 3008,
@@ -175,7 +179,7 @@ export default class TemplateStack extends cdk.Stack {
     });
 
     aBucket.grantReadWrite(api);
-    aTable.grantReadWriteData(api);
+    users.grantReadWriteData(api);
     slackQueue.grantSendMessages(api);
 
     return api;
