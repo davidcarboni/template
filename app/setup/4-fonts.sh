@@ -16,11 +16,11 @@ echo " - to handle variable fonts, see https://medium.com/timeless/adding-custom
 
 # Optionally set up Slice for variable-width fonts
 
-read -p "Do you want to use Slice to handle a variable-width font? (y/N) " yn
+read -p "Do you want to use Slice to handle a variable-width font? (Y/n) " yn
 case $yn in
-	y ) echo Downloading and starting...;;
-	* ) echo Finished;
+	n ) echo Finished;
 		exit 0;;
+	* ) echo Opening slice...;;
 esac
 
 # Basded on: https://slice-gui.netlify.app/docs/install/
