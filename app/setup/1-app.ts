@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from 'fs';
 
-const json = readFileSync('../package.json').toString();
-const packageJson = JSON.parse(json);
+const packageJsonContent = readFileSync('../package.json').toString();
+const packageJson = JSON.parse(packageJsonContent);
 const scripts = packageJson.scripts || {};
 
 
@@ -25,3 +25,13 @@ if (appJson.expo.android) appJson.expo.android.package = appJson.expo.android.pa
 if (appJson.expo.web) delete appJson.expo.web;
 
 writeFileSync('../app.json', JSON.stringify(appJson, null, 2));
+
+
+const tsconfigJson = readFileSync('../tsconfig.json').toString();
+const tsconfig = JSON.parse(tsconfigJson);
+const compilerOptions = tsconfig.compilerOptions || {};
+
+// Clears a spurious error on an empty conponent (<></>)
+compilerOptions.jsx = 'react-jsx';
+
+writeFileSync('../tsconfig.json', JSON.stringify(packageJson, null, 2));
