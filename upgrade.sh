@@ -10,6 +10,7 @@ yarn upgrade:expo
 for lambda in api slack
 do
     cd ${root}/${lambda}
+    rm -rf node_modules
     rm yarn.lock
     yarn
 done
