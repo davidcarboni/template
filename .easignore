@@ -1,0 +1,9 @@
+# Only include the app directory when uploading files to EAS
+
+# Ignore everything
+*
+
+# Except the app directory and the contents of the directory
+# see: https://betterstack.com/community/questions/git-exclude-folder-but-include-specific-subfolder/
+!app
+!app/**
