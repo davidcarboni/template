@@ -18,7 +18,7 @@
   "license": "UNLICENSED",
   "devDependencies": {
     "@eslint/js": "*",
-    "@tsconfig/node18": "*",
+    "@tsconfig/node22": "*",
     "@types/aws-lambda": "*",
     "@types/chai": "*",
     "@types/mocha": "*",
