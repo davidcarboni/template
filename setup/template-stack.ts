@@ -167,7 +167,7 @@ export default class TemplateStack extends cdk.Stack {
     // Lambda for the Node API
     const api = ZipFunction.node(this, 'api', {
       environment: {
-        SIGNIN_URL: cognito.signInUrl(),
+        // SIGNIN_URL: cognito.signInUrl(),
         SLACK_QUEUE_URL: slackQueue.queueUrl,
         BUCKET: aBucket.bucketName,
         TABLE: users.tableName,
