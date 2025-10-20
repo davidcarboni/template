@@ -1,0 +1,41 @@
+{
+  "name": "shared",
+  "version": "1.0.0",
+  "description": "Shared types between the api and the app.",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "lint": "eslint --fix src test",
+    "test": "mocha --import=tsx -r tsconfig-paths/register 'test/unit/**/*.spec.ts' # tsconfig-paths/register helps resolve imports in tests",
+    "compile": "tsc"
+  },
+  "author": "David Carboni",
+  "private": true,
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "*",
+    "@aws-sdk/lib-dynamodb": "*"
+  },
+  "devDependencies": {
+    "@eslint/js": "*",
+    "@tsconfig/node22": "*",
+    "@types/chai": "*",
+    "@types/jsonwebtoken": "*",
+    "@types/mocha": "*",
+    "@types/node": "*",
+    "chai": "*",
+    "eslint": "*",
+    "eslint-plugin-no-only-tests": "*",
+    "jsonwebtoken": "*",
+    "mocha": "*",
+    "ts-node": "*",
+    "tsconfig-paths": "*",
+    "tsx": "*",
+    "typescript": "*",
+    "typescript-eslint": "*",
+    "zod": "*"
+  },
+  "peerDependencies": {
+    "zod": "*"
+  }
+}
