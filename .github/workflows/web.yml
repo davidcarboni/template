@@ -5,14 +5,14 @@ on:
     branches:
       - main
     paths:
-    # Build when there are changes in the directory that holds the component,
-    # or when this workflow file is changed
-    - 'web/**'
-    - '.github/workflows/web.yml'
+      # Build when there are changes in the directory that holds the component,
+      # or when this workflow file is changed
+      - "web/**"
+      - ".github/workflows/web.yml"
   schedule:
     # A weekly build to pick up updates to the base container image
     # A weekday at mid-day - when someone is likely to be working (avoid bank holidays)
-    - cron: "0 12 * * 4"
+    - cron: "0 12 * * 3"
 
 permissions:
   id-token: write
@@ -23,25 +23,35 @@ jobs:
     name: Web
     runs-on: ubuntu-latest
     env:
-      bucket: ${{ vars.CLOUDFRONT_BUCKET }}
-      distributionId: ${{ vars.CLOUDFRONT_DISTRIBUTIONID }}
+      bucket: ${{ vars.WEB_BUCKET }}
+      distributionId: ${{ vars.WEB_DISTRIBUTIONID }}
 
     steps:
+      - uses: actions/checkout@v4
 
-    - uses: actions/checkout@v3
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.GHA_OIDC_ROLE }}
+          aws-region: eu-west-2
 
-    - uses: aws-actions/configure-aws-credentials@v4
-      with:
-        role-to-assume: ${{ vars.GHA_OIDC_ROLE }}
-        aws-region: eu-west-2
+      - name: Upload to s3
+        working-directory: ${{ github.workflow }}
+        run: |
+          cp -r public/. dist/ # https://superuser.com/a/367303/162662
+          cd dist
+          # aws s3 sync --delete . s3://${bucket}/
+          aws s3 sync . s3://${bucket}/
 
-    - name: Upload to s3
-      working-directory: ${{ github.workflow }}
-      run: |
-        cd public
-        aws s3 sync --delete . s3://${bucket}/
+      - name: Invalidate Cloudfront
+        working-directory: ${{ github.workflow }}
+        run: |
+          aws cloudfront create-invalidation --distribution-id $distributionId --paths '/*'
 
-    - name: Invalidate Cloudfront
-      working-directory: ${{ github.workflow }}
-      run: |
-        aws cloudfront create-invalidation --distribution-id $distributionId --paths '/*'
+      - name: Notify Discord
+        if: failure()
+        uses: sarisia/actions-status-discord@v1
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        with:
+          status: ${{ job.status }}
+          title: ${{ github.workflow }}
