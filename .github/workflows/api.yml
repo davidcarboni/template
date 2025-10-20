@@ -5,10 +5,10 @@ on:
     branches:
       - main
     paths:
-    # Build when there are changes in the directory that holds the component,
-    # or when this workflow file is changed
-    - 'api/**'
-    - '.github/workflows/api.yml'
+      # Build when there are changes in the directory that holds the component,
+      # or when this workflow file is changed
+      - "api/**"
+      - ".github/workflows/api.yml"
   schedule:
     # A weekly build to pick up updates and security patches for libraries
     # This should fail if there are API changes in new dependency versions
@@ -27,29 +27,28 @@ jobs:
       lambdaName: ${{ vars.API_LAMBDA }}
 
     steps:
+      - uses: actions/checkout@v4
 
-    - uses: actions/checkout@v3
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.GHA_OIDC_ROLE }}
+          aws-region: eu-west-2
 
-    - uses: aws-actions/configure-aws-credentials@v4
-      with:
-        role-to-assume: ${{ vars.GHA_OIDC_ROLE }}
-        aws-region: eu-west-2
+      - name: Build
+        working-directory: ${{ github.workflow }}
+        run: |
+          yarn
+          yarn lint
+          yarn test
+          yarn compile
 
-    - name: Build
-      working-directory: ${{ github.workflow }}
-      run: |
-        yarn
-        yarn lint
-        yarn test
-        yarn compile
+      - name: Package
+        working-directory: ${{ github.workflow }}
+        run: |
+          yarn package
 
-    - name: Package
-      working-directory: ${{ github.workflow }}
-      run: |
-        yarn package
-
-    - name: Update function code
-      working-directory: ${{ github.workflow }}
-      run: |
-        aws s3 cp dist/function.zip s3://${{ env.buildsBucket }}/${{ github.workflow }}.zip
-        aws lambda update-function-code --function-name=${{ env.lambdaName }} --s3-bucket ${{ env.buildsBucket }} --s3-key ${{ github.workflow }}.zip
+      - name: Update function code
+        working-directory: ${{ github.workflow }}
+        run: |
+          aws s3 cp dist/function.zip s3://${{ env.buildsBucket }}/${{ github.workflow }}.zip
+          aws lambda update-function-code --function-name=${{ env.lambdaName }} --s3-bucket ${{ env.buildsBucket }} --s3-key ${{ github.workflow }}.zip
