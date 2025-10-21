@@ -38,6 +38,13 @@ cdk deploy --require-approval never --outputs-file ./cdk.out/cdk-outputs.json
 
 # Update secrets
 echo "Setting Github secrets"
-yarn secrets
+
+if [ -f ./github.sh ]; then
+  echo "Setting Github secrets and variables..."
+  source ./github.sh
+  yarn secrets
+else
+  echo "No access token found, skipping Github secrets and variables."
+fi
 
 echo "End: $(date)"
