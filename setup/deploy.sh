@@ -34,7 +34,7 @@ case $yn in
 esac
 
 # Skip approval on the basis we've already done a diff above so this creates a repeat y/n prompt:
-cdk deploy --require-approval never --outputs-file ./secrets/cdk-outputs.json
+cdk deploy --require-approval never --outputs-file ./cdk.out/cdk-outputs.json
 
 # Update secrets
 echo "Setting Github secrets"
