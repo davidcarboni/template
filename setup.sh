@@ -52,7 +52,8 @@ if [ ! -d "$name" ] && [ ! -d ".infrastructure" ]; then
   echo secrets >> .gitignore
   echo "github.sh" >> .gitignore
   mkdir secrets
-  printf "\nexport USERNAME=myusername\nexport PERSONAL_ACCESS_TOKEN=github_pat_xxxxxxxxxxxxxxxxxxx" >> github.sh
+  echo "export USERNAME=myusername" >> github.sh
+  echo "export PERSONAL_ACCESS_TOKEN=github_pat_xxxxxxxxxxxxxxxxxxx" >> github.sh
 
   # Add a README to explain how to use the secrets directory
   cp $dir/setup/README.md ./secrets/README.md
@@ -62,10 +63,8 @@ if [ ! -d "$name" ] && [ ! -d ".infrastructure" ]; then
   echo "# export ZONE_ID=Z0XXXXXXXXXXXXXXXXXXX" >> secrets/domain.sh
   echo "export COGNITO_DOMAIN_PREFIX=$(date +%s)" >> secrets/domain.sh
   echo "export SLACK_WEBHOOK=https://hooks.slack.com/services/xxxxxxxxxxx/xxxxxxxxxxx/xxxxxxxxxxxxxxxxxxx" >> secrets/slack.sh
-  echo "export USERNAME=myusername" >> secrets/github.sh
-  echo "export PERSONAL_ACCESS_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxx" >> secrets/github.sh
-  echo "export OWNER=myorg" >> secrets/github.sh
-  echo "export REPO=${name}" >> secrets/github.sh
+  echo "export OWNER=myorg" >> secrets/repo.sh
+  echo "export REPO=${name}" >> secrets/repo.sh
   if [ ! -z ${AWS_PROFILE+x} ] ; then # https://stackoverflow.com/a/13864829/723506
     echo "export AWS_PROFILE=${AWS_PROFILE}" >> secrets/aws.sh
   fi
