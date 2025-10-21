@@ -50,7 +50,9 @@ if [ ! -d "$name" ] && [ ! -d ".infrastructure" ]; then
 
   # Set up secrets directory
   echo secrets >> .gitignore
+  echo "github.sh" >> .gitignore
   mkdir secrets
+  printf "\nexport USERNAME=myusername\nexport PERSONAL_ACCESS_TOKEN=github_pat_xxxxxxxxxxxxxxxxxxx" >> github.sh
 
   # Add a README to explain how to use the secrets directory
   cp $dir/setup/README.md ./secrets/README.md
